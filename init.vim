@@ -48,6 +48,7 @@ set tabstop=2
 set lbr
 set tw=125
 " indent
+set nofoldenable
 set ai
 set si
 set wrap
@@ -80,6 +81,7 @@ Plug 'junegunn/goyo.vim'
 Plug 'rhysd/vim-grammarous'
 Plug 'dbmrq/vim-ditto'
 Plug 'plasticboy/vim-markdown'
+Plug 'shime/vim-livedown'
 
 " Langs
 Plug 'vim-python/python-syntax'
@@ -92,6 +94,12 @@ call plug#end()
 
 colorscheme gruvbox
 set background=dark
+
+" LIVEDOWN
+let g:livedown_autorun = 0
+let g:livedown_open = 1 
+let g:livedown_port = 1337
+let g:livedown_browser = "safari"
 
 " GOYO
 function! s:goyo_enter()
@@ -108,7 +116,7 @@ function! s:goyo_leave()
   set showcmd
   set cursorline
   set ruler
-  set tw 125
+  set tw=125
   set scrolloff=5
   NoDitto
 endfunction
