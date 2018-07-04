@@ -73,18 +73,49 @@ Plug 'wincent/command-t', {
     \ }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'jiangmiao/auto-pairs'
 
-" LANGS
+" Text Editing
+Plug 'junegunn/goyo.vim'
+Plug 'rhysd/vim-grammarous'
+Plug 'dbmrq/vim-ditto'
+Plug 'plasticboy/vim-markdown'
+
+" Langs
 Plug 'vim-python/python-syntax'
 Plug 'stevearc/vim-arduino'
 
-" THEMES
+" Themes
 Plug 'morhetz/gruvbox'
 
 call plug#end()
 
 colorscheme gruvbox
 set background=dark
+
+" GOYO
+function! s:goyo_enter()
+  set noshowmode
+  set noshowcmd
+  set nocursorline
+  set noruler
+  set tw=80
+  set scrolloff=999
+  Ditto
+endfunction
+function! s:goyo_leave()
+  set showmode
+  set showcmd
+  set cursorline
+  set ruler
+  set tw 125
+  set scrolloff=5
+  NoDitto
+endfunction
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
+nnoremap <buffer> <leader>g :Goyo<CR>
+let g:goyo_width = 80
 
 " ARDUINO KEY BINDINGS
 nnoremap <buffer> <leader>m :ArduinoVerify<CR>
