@@ -4,10 +4,10 @@ set history=500
 " senses filetypes
 filetype plugin on
 filetype indent on
+" prevents folding
+set nofoldenable
 " checks for outside changes
 set autoread
-" better leader
-" let leader = ";"
 " fact save
 nmap <leader>w :w!<cr>
 " displays colors
@@ -48,12 +48,18 @@ set tabstop=2
 set lbr
 set tw=125
 " indent
-set nofoldenable
 set ai
 set si
 set wrap
 
+
 " GENERIC KEY BINDINGS
+" Good Practices
+map <Up> <Nop>
+map <Down> <Nop>
+map <Left> <Nop>
+map <Right> <Nop>
+" pane split maps
 map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
@@ -66,7 +72,7 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
 endif
 call plug#begin('~/.config/nvim/autoload/plugged')
 
-" Misc
+" Environment
 Plug 'vim-syntastic/syntastic'
 Plug 'scrooloose/nerdtree'
 Plug 'wincent/command-t', {
@@ -76,7 +82,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'jiangmiao/auto-pairs'
 
-" Text Editing
+" Writing
 Plug 'junegunn/goyo.vim'
 Plug 'rhysd/vim-grammarous'
 Plug 'dbmrq/vim-ditto'
@@ -100,6 +106,7 @@ let g:livedown_autorun = 0
 let g:livedown_open = 1 
 let g:livedown_port = 1337
 let g:livedown_browser = "safari"
+nmap <buffer> <leader>l :LivedownPreview<CR>
 
 " GOYO
 function! s:goyo_enter()
@@ -136,13 +143,15 @@ let g:arduino_dir = '~/.arduino15/'
 let g:arduino_run_headless = 1
 
 " SYNTASTIC
-"let g:syntastic_aggregate_errors = 1
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_python_checker = ["flake8"]
-let g:syntastic_cpp_checker = ["clang++"]
+let g:syntastic_cpp_checkers = ['clang++']
+let g:syntastic_cpp_compiler = 'clang++'
+let g:syntastic_cpp_compiler_options = '-std=c++14'
+
 " NERDTREE
 map <C-n> :NERDTreeToggle<CR>
 let g:NERDTreeDirArrowExpandable = '▸'
