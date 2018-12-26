@@ -52,8 +52,9 @@ set ai
 set si
 set wrap
 
-
 " GENERIC KEY BINDINGS
+nmap j gj
+nmap k gk
 " Good Practices
 map <Up> <Nop>
 map <Down> <Nop>
@@ -64,6 +65,13 @@ map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
+map <buffer> <C-s> :sp<CR>
+map <buffer> <C-v> :vsp<CR>
+map <buffer> <leader>f :e<CR>
+" Saving and fast actions
+map <buffer> <leader>w :w<CR>
+map <buffer> <leader>q :q!<CR>
+map <buffer> <leader>e :wq<CR>
 
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
     silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
@@ -73,40 +81,37 @@ endif
 call plug#begin('~/.config/nvim/autoload/plugged')
 
 " Environment
-Plug 'vim-syntastic/syntastic'
+Plug 'w0rp/ale'
 Plug 'scrooloose/nerdtree'
-Plug 'wincent/command-t', {
-    \   'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'
-    \ }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+" vim-repeat vim-surround ReplaceWithRegister vim-indent-object
+" https://github.com/kana?tab=repositories
+
+" Coding
 Plug 'jiangmiao/auto-pairs'
 
 " Writing
 Plug 'junegunn/goyo.vim'
 Plug 'rhysd/vim-grammarous'
 Plug 'dbmrq/vim-ditto'
-Plug 'plasticboy/vim-markdown'
-Plug 'shime/vim-livedown'
+Plug 'reedes/vim-lexical'
 
 " Langs
-Plug 'vim-python/python-syntax'
-Plug 'stevearc/vim-arduino'
+Plug 'sheerun/vim-polyglot'
+Plug 'SimonAbrelat/Vim-Symbols'
 
 " Themes
 Plug 'morhetz/gruvbox'
+Plug 'ayu-theme/ayu-vim'
+Plug 'arcticicestudio/nord-vim'
+Plug 'dylanaraps/wal.vim'
 
 call plug#end()
 
-colorscheme gruvbox
+colorscheme wal 
 set background=dark
-
-" LIVEDOWN
-let g:livedown_autorun = 0
-let g:livedown_open = 1 
-let g:livedown_port = 1337
-let g:livedown_browser = "safari"
-nmap <buffer> <leader>l :LivedownPreview<CR>
 
 " GOYO
 function! s:goyo_enter()
@@ -132,25 +137,53 @@ autocmd! User GoyoLeave nested call <SID>goyo_leave()
 nnoremap <buffer> <leader>g :Goyo<CR>
 let g:goyo_width = 80
 
-" ARDUINO KEY BINDINGS
-nnoremap <buffer> <leader>m :ArduinoVerify<CR>
-nnoremap <buffer> <leader>u :ArduinoUpload<CR>
-nnoremap <buffer> <leader>d :ArduinoUploadAndSerial<CR>
-nnoremap <buffer> <leader>b :ArduinoChooseBoard<CR>
-nnoremap <buffer> <leader>p :ArduinoChooseProgrammer<CR>
-let g:arduino_cmd = '/usr/share/arduino/arduino'
-let g:arduino_dir = '~/.arduino15/'
-let g:arduino_run_headless = 1
+" FZF"
+map <C-t> :FZF<CR>
 
-" SYNTASTIC
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_python_checker = ["flake8"]
-let g:syntastic_cpp_checkers = ['clang++']
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = '-std=c++14'
+let g:fzf_action = {
+  \ 'ctrl-g': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+let g:fzf_layout = { 'down': '~20%' }
+
+" LEXICAL
+augroup lexical
+  autocmd!
+  autocmd! BufEnter *.{tex} call lexical#init()
+  autocmd FileType markdown,mkd call lexical#init()
+  autocmd FileType textile call lexical#init()
+  autocmd FileType text call lexical#init({ 'spell': 0 })
+augroup END
+let g:lexical#spelllang = ['en_us']
+let g:lexical#thesaurus = ['~/.config/nvim/spell/mthesaur.txt']
+let g:lexical#spellfile = ['~/.config/nvim/spell/en.utf-8.add']
+
+" Latex
+fu! Writting_Enter()
+  set linebreak
+  set tw=110
+  call Ditto_Enter()
+endfu
+fu! Writting_Leave()
+  set nospell
+  call Ditto_Leave()
+endfu
+autocmd! BufEnter *.{tex} call Writting_Enter()
+autocmd! BufLeave *.{tex} call Writting_Leave()
+
+" ALE
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
+let g:ale_fix_on_save = 1
+let g:ale_lint_on_enter = 1
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_linters = {
+\ 'cpp': ['clang'],
+\ 'rust': ['rustc'],
+\ 'python': ['flake8'],
+\ 'haskell': ['ghc']
+\}
 
 " NERDTREE
 map <C-n> :NERDTreeToggle<CR>
