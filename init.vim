@@ -16,12 +16,12 @@ syntax on
 " UI
 " curser
 set cursorline
-set cursorline
+set guicursor=
 augroup CustomCursorLine
-    au!    
+    au!   
     au ColorScheme * :hi clear CursorLine
     au ColorScheme * :hi! CursorLine gui=underline cterm=underline
-  augroup END
+augroup END
 set ruler
 " searching
 set ignorecase
