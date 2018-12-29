@@ -16,6 +16,12 @@ syntax on
 " UI
 " curser
 set cursorline
+set cursorline
+augroup CustomCursorLine
+    au!    
+    au ColorScheme * :hi clear CursorLine
+    au ColorScheme * :hi! CursorLine gui=underline cterm=underline
+  augroup END
 set ruler
 " searching
 set ignorecase
@@ -163,11 +169,11 @@ let g:lexical#spellfile = ['~/.config/nvim/spell/en.utf-8.add']
 fu! Writting_Enter()
   set linebreak
   set tw=110
-  call Ditto_Enter()
+  Ditto
 endfu
 fu! Writting_Leave()
   set nospell
-  call Ditto_Leave()
+  NoDitto
 endfu
 autocmd! BufEnter *.{tex} call Writting_Enter()
 autocmd! BufLeave *.{tex} call Writting_Leave()
