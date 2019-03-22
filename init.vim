@@ -8,10 +8,10 @@ filetype indent on
 set nofoldenable
 " checks for outside changes
 set autoread
-" fact save
-nmap <leader>w :w!<cr>
 " displays colors
 syntax on
+set splitbelow
+set splitright
 
 " UI
 " curser
@@ -26,7 +26,7 @@ set ruler
 " searching
 set ignorecase
 set smartcase
-set hlsearch
+set nohlsearch
 set incsearch
 " Errors
 set noerrorbells
@@ -50,6 +50,7 @@ set smarttab
 " 1 tab == 2 spcaes
 set shiftwidth=2
 set tabstop=2
+set shiftround
 " line breaks
 set lbr
 set tw=125
@@ -57,6 +58,7 @@ set tw=125
 set ai
 set si
 set wrap
+
 
 " GENERIC KEY BINDINGS
 nmap j gj
@@ -78,6 +80,8 @@ map <buffer> <leader>f :e<CR>
 map <buffer> <leader>w :w<CR>
 map <buffer> <leader>q :q!<CR>
 map <buffer> <leader>e :wq<CR>
+" Copy
+nmap Y y$
 
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
     silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
@@ -89,14 +93,13 @@ call plug#begin('~/.config/nvim/autoload/plugged')
 " Environment
 Plug 'w0rp/ale'
 Plug 'scrooloose/nerdtree'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" vim-repeat vim-surround ReplaceWithRegister vim-indent-object
-" https://github.com/kana?tab=repositories
-
-" Coding
-Plug 'jiangmiao/auto-pairs'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 
 " Writing
 Plug 'junegunn/goyo.vim'
@@ -113,11 +116,16 @@ Plug 'morhetz/gruvbox'
 Plug 'ayu-theme/ayu-vim'
 Plug 'arcticicestudio/nord-vim'
 Plug 'dylanaraps/wal.vim'
+Plug 'chriskempson/base16-vim'
 
 call plug#end()
 
-colorscheme wal 
-set background=dark
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
+"colorscheme base16 
+" set background=dark
 
 " GOYO
 function! s:goyo_enter()
@@ -143,15 +151,13 @@ autocmd! User GoyoLeave nested call <SID>goyo_leave()
 nnoremap <buffer> <leader>g :Goyo<CR>
 let g:goyo_width = 80
 
-" FZF"
-map <C-t> :FZF<CR>
-
-let g:fzf_action = {
-  \ 'ctrl-g': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
-
-let g:fzf_layout = { 'down': '~20%' }
+" CTRL - P
+if executable('rg')
+  let g:ctrlp_user_command = 'rg %s --files --hidden --color=never --glob ""'
+endif
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_open_new_file = 'v'
+let g:ctrlp_open_multiple_files = '2vjr'
 
 " LEXICAL
 augroup lexical
@@ -187,9 +193,11 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_linters = {
 \ 'cpp': ['clang'],
 \ 'rust': ['rustc'],
-\ 'python': ['flake8'],
+\ 'python': ['mypy'],
 \ 'haskell': ['ghc']
 \}
+nnoremap ]r :ALENextWrap<CR>
+nnoremap [r :ALEPreviousWrap<CR>
 
 " NERDTREE
 map <C-n> :NERDTreeToggle<CR>
@@ -202,3 +210,22 @@ let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#tabline#formatter = 'default'
 let g:airline_theme='distinguished'
+
+" Deoplete
+let g:deoplete#enable_at_startup = 1
+
+" NerdCommenter
+let g:NERDSpaceDelims = 1
+nmap c :call NERDComment(0,"toggle")<CR>
+
+" Java
+fu! Java_Enter()
+  set.shiftwidth=2¬
+  set.tabstop=2¬
+endfu
+fu! Java_Leave()
+  set.shiftwidth=2¬
+  set.tabstop=2¬
+endfu
+autocmd! BufEnter *.{java} call Writting_Enter()
+autocmd! BufLeave *.{java} call Writting_Leave()
