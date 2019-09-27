@@ -18,7 +18,7 @@ set splitright
 set cursorline
 set guicursor=
 augroup CustomCursorLine
-    au!   
+    au!
     au ColorScheme * :hi clear CursorLine
     au ColorScheme * :hi! CursorLine gui=underline cterm=underline
 augroup END
@@ -42,7 +42,7 @@ set noswapfile
 
 " TEXT
 " invisiables
-set listchars=eol:¬,tab:>-,trail:~,extends:>,precedes:<,space:.
+set listchars=tab:>-
 set list
 " font
 set expandtab " Tabs -> spaces
@@ -82,6 +82,20 @@ map <buffer> <leader>q :q!<CR>
 map <buffer> <leader>e :wq<CR>
 " Copy
 nmap Y y$
+" Terminal exit
+tnoremap <Esc> <C-\><C-n>
+" Indent
+" nnoremap <C-h> gg=G<C-o><C-o>
+" Jumplist
+nnoremap <expr> k (v:count > 1 ? "m" . v:count : '') .'gk'
+nnoremap <expr> j (v:count > 1 ? "m" . v:count : '') .'gj'
+
+" AUTOCOMMANDS
+autocmd BufWritePre * %s/\s\+$//e
+
+if has('nvim') || has('termguicolors')
+  set termguicolors
+endif
 
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
     silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
@@ -96,6 +110,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'itchyny/lightline.vim'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'scrooloose/nerdcommenter'
 Plug 'tpope/vim-surround'
@@ -117,15 +132,16 @@ Plug 'ayu-theme/ayu-vim'
 Plug 'arcticicestudio/nord-vim'
 Plug 'dylanaraps/wal.vim'
 Plug 'chriskempson/base16-vim'
+Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
 
 call plug#end()
 
-if filereadable(expand("~/.vimrc_background"))
-  let base16colorspace=256
-  source ~/.vimrc_background
-endif
-"colorscheme base16 
-" set background=dark
+"if filereadable(expand("~/.vimrc_background"))
+"  let base16colorspace=256
+"  source ~/.vimrc_background
+"endif
+colorscheme challenger_deep
+"set background=dark
 
 " GOYO
 function! s:goyo_enter()
@@ -194,7 +210,8 @@ let g:ale_linters = {
 \ 'cpp': ['clang'],
 \ 'rust': ['rustc'],
 \ 'python': ['mypy'],
-\ 'haskell': ['ghc']
+\ 'haskell': ['ghc'],
+\ 'latex': ['pdflatex']
 \}
 nnoremap ]r :ALENextWrap<CR>
 nnoremap [r :ALEPreviousWrap<CR>
@@ -205,11 +222,14 @@ let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 
 " AIRLINE
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#formatter = 'default'
-let g:airline_theme='distinguished'
+" let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#left_sep = ' '
+" let g:airline#extensions#tabline#left_alt_sep = '|'
+" let g:airline#extensions#tabline#formatter = 'default'
+" let g:airline_theme='distinguished'
+
+" LIGHTLINE
+let g:lightline = { 'colorscheme': 'challenger_deep'}
 
 " Deoplete
 let g:deoplete#enable_at_startup = 1
@@ -220,12 +240,12 @@ nmap c :call NERDComment(0,"toggle")<CR>
 
 " Java
 fu! Java_Enter()
-  set.shiftwidth=2¬
-  set.tabstop=2¬
+  set shiftwidth=4
+  set tabstop=4
 endfu
 fu! Java_Leave()
-  set.shiftwidth=2¬
-  set.tabstop=2¬
+  set shiftwidth=2
+  set tabstop=2
 endfu
-autocmd! BufEnter *.{java} call Writting_Enter()
-autocmd! BufLeave *.{java} call Writting_Leave()
+autocmd! BufEnter *.{java} call Java_Enter()
+autocmd! BufLeave *.{java} call Java_Leave()
