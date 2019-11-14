@@ -1,20 +1,20 @@
 " GENERAL CONFIG
-" History
+" history
 set history=500
-" senses filetypes
-filetype plugin on
+" filetypes
 filetype indent on
+filetype plugin on
+set nocompatible
 " prevents folding
 set nofoldenable
 " checks for outside changes
 set autoread
-" displays colors
-syntax on
-set splitbelow
+" new window to right
 set splitright
 
-" UI
-" curser
+" SYNTAX
+syntax on
+" cursor
 set cursorline
 set guicursor=
 augroup CustomCursorLine
@@ -23,22 +23,6 @@ augroup CustomCursorLine
     au ColorScheme * :hi! CursorLine gui=underline cterm=underline
 augroup END
 set ruler
-" searching
-set ignorecase
-set smartcase
-set nohlsearch
-set incsearch
-" Errors
-set noerrorbells
-set novisualbell
-" Line nnumbers
-set number
-set relativenumber
-
-" FILES
-set nobackup
-set nowb
-set noswapfile
 
 " TEXT
 " invisiables
@@ -47,9 +31,9 @@ set list
 " font
 set expandtab " Tabs -> spaces
 set smarttab
-" 1 tab == 2 spcaes
-set shiftwidth=2
-set tabstop=2
+" 1 tab == 4 spcaes
+set shiftwidth=4
+set tabstop=4
 set shiftround
 " line breaks
 set lbr
@@ -59,7 +43,21 @@ set ai
 set si
 set wrap
 
+" FILES
+set path+=**
+set wildmenu
+" :b to autocomplete to any buffer
 
+" NUMBERING
+set number
+set relativenumber
+
+" NO BACK UPS
+set nobackup
+set nowb
+set noswapfile
+
+" MAPPING
 " GENERIC KEY BINDINGS
 nmap j gj
 nmap k gk
@@ -75,23 +73,30 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 map <buffer> <C-s> :sp<CR>
 map <buffer> <C-v> :vsp<CR>
-map <buffer> <leader>f :e<CR>
 " Saving and fast actions
 map <buffer> <leader>w :w<CR>
 map <buffer> <leader>q :q!<CR>
 map <buffer> <leader>e :wq<CR>
+" Tabs
+map <leader>f :tabnew<CR>
+map <leader>r :tabnew +te<CR>
+nnoremap <A-1> 1gt
+nnoremap <A-2> 2gt
+nnoremap <A-3> 3gt
+nnoremap <A-4> 4gt
+nnoremap <A-5> 5gt
+nnoremap <A-6> 6gt
+nnoremap <A-7> 7gt
+nnoremap <A-8> 8gt
+nnoremap <A-9> 9gt
+nnoremap <A-0> 10gt
 " Copy
 nmap Y y$
 " Terminal exit
 tnoremap <Esc> <C-\><C-n>
-" Indent
-" nnoremap <C-h> gg=G<C-o><C-o>
 " Jumplist
 nnoremap <expr> k (v:count > 1 ? "m" . v:count : '') .'gk'
 nnoremap <expr> j (v:count > 1 ? "m" . v:count : '') .'gj'
-
-" AUTOCOMMANDS
-autocmd BufWritePre * %s/\s\+$//e
 
 if has('nvim') || has('termguicolors')
   set termguicolors
@@ -105,147 +110,45 @@ endif
 call plug#begin('~/.config/nvim/autoload/plugged')
 
 " Environment
-Plug 'w0rp/ale'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'scrooloose/nerdtree'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'itchyny/lightline.vim'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'scrooloose/nerdcommenter'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-
-" Writing
-Plug 'junegunn/goyo.vim'
-Plug 'rhysd/vim-grammarous'
-Plug 'dbmrq/vim-ditto'
-Plug 'reedes/vim-lexical'
+Plug 'dense-analysis/ale'
 
 " Langs
 Plug 'sheerun/vim-polyglot'
-Plug 'SimonAbrelat/Vim-Symbols'
 
-" Themes
-Plug 'morhetz/gruvbox'
-Plug 'ayu-theme/ayu-vim'
-Plug 'arcticicestudio/nord-vim'
-Plug 'dylanaraps/wal.vim'
-Plug 'chriskempson/base16-vim'
-Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
+" Colors
+Plug 'lifepillar/vim-gruvbox8'
+Plug 'itchyny/lightline.vim'
+Plug 'shinchu/lightline-gruvbox.vim'
 
 call plug#end()
 
-"if filereadable(expand("~/.vimrc_background"))
-"  let base16colorspace=256
-"  source ~/.vimrc_background
-"endif
-colorscheme challenger_deep
-"set background=dark
+colorscheme gruvbox8_hard
 
-" GOYO
-function! s:goyo_enter()
-  set noshowmode
-  set noshowcmd
-  set nocursorline
-  set noruler
-  set tw=80
-  set scrolloff=999
-  Ditto
-endfunction
-function! s:goyo_leave()
-  set showmode
-  set showcmd
-  set cursorline
-  set ruler
-  set tw=125
-  set scrolloff=5
-  NoDitto
-endfunction
-autocmd! User GoyoEnter nested call <SID>goyo_enter()
-autocmd! User GoyoLeave nested call <SID>goyo_leave()
-nnoremap <buffer> <leader>g :Goyo<CR>
-let g:goyo_width = 80
-
-" CTRL - P
-if executable('rg')
-  let g:ctrlp_user_command = 'rg %s --files --hidden --color=never --glob ""'
-endif
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_open_new_file = 'v'
-let g:ctrlp_open_multiple_files = '2vjr'
-
-" LEXICAL
-augroup lexical
-  autocmd!
-  autocmd! BufEnter *.{tex} call lexical#init()
-  autocmd FileType markdown,mkd call lexical#init()
-  autocmd FileType textile call lexical#init()
-  autocmd FileType text call lexical#init({ 'spell': 0 })
-augroup END
-let g:lexical#spelllang = ['en_us']
-let g:lexical#thesaurus = ['~/.config/nvim/spell/mthesaur.txt']
-let g:lexical#spellfile = ['~/.config/nvim/spell/en.utf-8.add']
-
-" Latex
-fu! Writting_Enter()
-  set linebreak
-  set tw=110
-  Ditto
-endfu
-fu! Writting_Leave()
-  set nospell
-  NoDitto
-endfu
-autocmd! BufEnter *.{tex} call Writting_Enter()
-autocmd! BufLeave *.{tex} call Writting_Leave()
+" Lightline
+let g:lightline = {}
+let g:lightline.colorscheme = 'gruvbox'
 
 " ALE
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '--'
 let g:ale_fix_on_save = 1
-let g:ale_lint_on_enter = 1
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_linters = {
-\ 'cpp': ['clang'],
-\ 'rust': ['rustc'],
-\ 'python': ['mypy'],
-\ 'haskell': ['ghc'],
-\ 'latex': ['pdflatex']
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'python': ['black'],
 \}
-nnoremap ]r :ALENextWrap<CR>
-nnoremap [r :ALEPreviousWrap<CR>
+let g:ale_linters = {
+\   'cpp': ['clang'],
+\   'python': ['flake8'],
+\   'java': ['javac'],
+\}
 
-" NERDTREE
-map <C-n> :NERDTreeToggle<CR>
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
+" FZF
+map <C-p> :Files<CR>
+let g:fzf_layout = { 'down': '~20%' }
 
-" AIRLINE
-" let g:airline#extensions#tabline#enabled = 1
-" let g:airline#extensions#tabline#left_sep = ' '
-" let g:airline#extensions#tabline#left_alt_sep = '|'
-" let g:airline#extensions#tabline#formatter = 'default'
-" let g:airline_theme='distinguished'
-
-" LIGHTLINE
-let g:lightline = { 'colorscheme': 'challenger_deep'}
-
-" Deoplete
-let g:deoplete#enable_at_startup = 1
-
-" NerdCommenter
-let g:NERDSpaceDelims = 1
-nmap c :call NERDComment(0,"toggle")<CR>
-
-" Java
-fu! Java_Enter()
-  set shiftwidth=4
-  set tabstop=4
-endfu
-fu! Java_Leave()
-  set shiftwidth=2
-  set tabstop=2
-endfu
-autocmd! BufEnter *.{java} call Java_Enter()
-autocmd! BufLeave *.{java} call Java_Leave()
+" RAINBOW
+au VimEnter * RainbowParentheses
+let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{','}']]
+let g:rainbow#blacklist = ["#fab005", "#d79921", "#fabd2f"] " removes yellows
