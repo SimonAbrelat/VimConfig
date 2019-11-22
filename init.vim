@@ -72,7 +72,6 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 map <buffer> <C-s> :sp<CR>
-map <buffer> <C-v> :vsp<CR>
 " Saving and fast actions
 map <buffer> <leader>w :w<CR>
 map <buffer> <leader>q :q!<CR>
@@ -80,16 +79,16 @@ map <buffer> <leader>e :wq<CR>
 " Tabs
 map <leader>f :tabnew<CR>
 map <leader>r :tabnew +te<CR>
-nnoremap <A-1> 1gt
-nnoremap <A-2> 2gt
-nnoremap <A-3> 3gt
-nnoremap <A-4> 4gt
-nnoremap <A-5> 5gt
-nnoremap <A-6> 6gt
-nnoremap <A-7> 7gt
-nnoremap <A-8> 8gt
-nnoremap <A-9> 9gt
-nnoremap <A-0> 10gt
+map <A-1> 1gt
+map <A-2> 2gt
+map <A-3> 3gt
+map <A-4> 4gt
+map <A-5> 5gt
+map <A-6> 6gt
+map <A-7> 7gt
+map <A-8> 8gt
+map <A-9> 9gt
+map <A-0> 10gt
 " Copy
 nmap Y y$
 " Terminal exit
@@ -115,6 +114,9 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'dense-analysis/ale'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 
 " Langs
 Plug 'sheerun/vim-polyglot'
@@ -137,12 +139,26 @@ let g:ale_fix_on_save = 1
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   'python': ['black'],
+\   'haskell': ['hfmt', 'hlint'],
 \}
 let g:ale_linters = {
 \   'cpp': ['clang'],
 \   'python': ['flake8'],
 \   'java': ['javac'],
+\   'haskell': ['hlint', 'stack-ghc', 'hfmt'],
 \}
+
+" Snippets
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<PageUp>"
+let g:UltiSnipsJumpBackwardTrigger="<PageDown>"
+let g:UltiSnipsEditSplit="vertical"
+
+" Deoplete
+let g:deoplete#enable_at_startup = 1
+
+" NERDTREE
+map <C-n> :NERDTreeToggle<CR>
 
 " FZF
 map <C-p> :Files<CR>
