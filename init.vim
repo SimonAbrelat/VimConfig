@@ -117,6 +117,7 @@ Plug 'dense-analysis/ale'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'kamykn/spelunker.vim'
 
 " Langs
 Plug 'sheerun/vim-polyglot'
@@ -129,6 +130,9 @@ Plug 'shinchu/lightline-gruvbox.vim'
 call plug#end()
 
 colorscheme gruvbox8_hard
+
+" Spelling
+set nospell "prevents conflict with vim
 
 " Lightline
 let g:lightline = {}
@@ -144,9 +148,11 @@ let g:ale_fixers = {
 let g:ale_linters = {
 \   'cpp': ['clang'],
 \   'python': ['flake8'],
-\   'java': ['javac'],
+\   'java': ['javac', 'checkstyle'],
 \   'haskell': ['hlint', 'stack-ghc', 'hfmt'],
+\   'fortran': ['gfortran'],
 \}
+let g:ale_java_checkstyle_config = "~/Documents/School/Year_1/CS1332/CS1332-checkstyle.xml"
 
 " Snippets
 let g:UltiSnipsExpandTrigger="<tab>"

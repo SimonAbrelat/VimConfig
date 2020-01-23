@@ -1,0 +1,20 @@
+snippet func "function with implicit none"
+function ${1:name}($2) result($3)
+implicit none
+	${0}
+end function $1
+endsnippet
+
+snippet sub
+subroutine ${1:name}($2)
+implicit none
+	${0}
+end subroutine $1
+endsnippet
+
+snippet proc
+procedure ${1:name}
+implicit none
+	${0}
+end procedure $1
+endsnippet
