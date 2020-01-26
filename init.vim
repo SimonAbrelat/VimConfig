@@ -93,9 +93,6 @@ map <A-0> 10gt
 nmap Y y$
 " Terminal exit
 tnoremap <Esc> <C-\><C-n>
-" Jumplist
-nnoremap <expr> k (v:count > 1 ? "m" . v:count : '') .'gk'
-nnoremap <expr> j (v:count > 1 ? "m" . v:count : '') .'gj'
 
 if has('nvim') || has('termguicolors')
   set termguicolors
