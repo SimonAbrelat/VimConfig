@@ -3,7 +3,9 @@
 ------------------------------------------------------------------------------
 -- history
 vim.g.history = 500
--- line numbering vim.opt.number = true vim.opt.relativenumber = true
+-- line numbering
+vim.opt.number = true
+vim.opt.relativenumber = true
 -- tabbing
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -181,13 +183,6 @@ require("lazy").setup({
 	{
 		-- Make a pretty line
 		'nvim-lualine/lualine.nvim',
-		opts = {
-			options = {
-				icons_enabled = false,
-				component_seperator = '|',
-				section_seperator = '',
-			},
-		},
 	},
 }, {})
 
@@ -195,6 +190,17 @@ require("lazy").setup({
 -- FUGITIVE
 ------------------------------------------------------------------------------
 vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
+
+------------------------------------------------------------------------------
+-- Lualine
+------------------------------------------------------------------------------
+require('lualine').setup({
+    options = {
+        icons_enabled = false,
+        component_separators = '|',
+        section_separators = '',
+    },
+})
 
 ------------------------------------------------------------------------------
 -- LSP CONFIG
