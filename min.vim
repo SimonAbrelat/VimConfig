@@ -1,4 +1,10 @@
 " GENERAL CONFIG
+" better leader
+let g:mapleader=" "
+let g:maplocalleader=" "
+" numbering
+set number
+set relativenumber
 " history
 set history=500
 " filetypes
@@ -11,18 +17,27 @@ set nofoldenable
 set autoread
 " new window to right
 set splitright
+" no back ups
+set nobackup
+set nowb
+set noswapfile
+" files
+set path+=**
+set wildmenu
 
 " SYNTAX
 syntax on
+set termguicolors
+" colorscheme
+colo slate " get a better one later
 " cursor
+set ruler
 set cursorline
-set guicursor=
 augroup CustomCursorLine
     au!
     au ColorScheme * :hi clear CursorLine
-    au ColorScheme * :hi! CursorLine gui=underline cterm=underline
+    au ColorScheme * :hi! CursorLine guibg=none ctermbg=none gui=underline cterm=underline
 augroup END
-set ruler
 
 " TEXT
 " invisiables
@@ -43,62 +58,70 @@ set ai
 set si
 set wrap
 
-" FILES
-set path+=**
-set wildmenu
-" :b to autocomplete to any buffer
+" ------------------------------------------------------------------------------
+" MAPPINGS
+" ------------------------------------------------------------------------------
+" General
+nmap Q <Nop>
 
-" NUMBERING
-set number
-set relativenumber
-
-" NO BACK UPS
-set nobackup
-set nowb
-set noswapfile
-
-" MAPPING
-" Good practices
-map <Up> <Nop>
-map <Down> <Nop>
-map <Left> <Nop>
-map <Right> <Nop>
-" Saving and Closing
-map <buffer> <leader>w :w<CR>
-map <buffer> <leader>q :q<CR>
-map <buffer> <leader>e :wq<CR>
+" Window Management
+" saving and closing
+map <leader>ww :w<CR>
+map <leader>wq :q<CR>
+map <leader>we :wq<CR>
+map <leader>wr :source $MYVIMRC<CR>
+map <leader>wc :e $MYVIMRC<CR>
 " Pane management
-map <C-h> <C-W>h
-map <C-j> <C-w>j
-map <C-k> <C-W>k
-map <C-l> <C-W>l
-map <buffer> <C-c> :split <CR>
-map <buffer> <C-v> :vsplit <CR>
-" File navegation
-map <C-n> :exec Folder()<CR>
+map <leader>wh <C-W>h
+map <leader>wj <C-w>j
+map <leader>wk <C-W>k
+map <leader>wl <C-W>l
+map <leader>ws :split <CR>
+map <leader>wv :vsplit <CR>
 " Tabs
-map <leader>f :tabnew<CR>
-map <leader>r :tabnew +te<CR>
-nnoremap <A-1> 1gt
-nnoremap <A-2> 2gt
-nnoremap <A-3> 3gt
-nnoremap <A-4> 4gt
-nnoremap <A-5> 5gt
-nnoremap <A-6> 6gt
-nnoremap <A-7> 7gt
-nnoremap <A-8> 8gt
-nnoremap <A-9> 9gt
-nnoremap <A-0> 10gt
-" Copy
-nmap Y y$
+map <leader>tn :tabnew<CR>
+map <leader>tt :tabnew +te<CR>
+map <leader>t1 1gt
+map <leader>t2 2gt
+map <leader>t3 3gt
+map <leader>t4 4gt
+map <leader>t5 5gt
+map <leader>t6 6gt
+map <leader>t7 7gt
+map <leader>t8 8gt
+map <leader>t9 9gt
+map <leader>t0 10gt
 " Terminal exit
 tnoremap <Esc> <C-\><C-n>
-" Jumplist
-nnoremap <expr> k (v:count > 1 ? "m" . v:count : '') .'gk'
-nnoremap <expr> j (v:count > 1 ? "m" . v:count : '') .'gj'
-map <buffer> <C-n> :exec Folder()<CR>
 
-function Folder()
-    :vsplit
-    :Ex
-endfunction
+" Editing
+" scope aware moves
+vnoremap J :m '>+1<CR>gv=gv"
+vnoremap K :m '<-2<CR>gv=gv"
+" center the screen
+nmap <C-d> <C-d>zz
+nmap <C-u> <C-u>zz
+nmap n nzzzv
+nmap N Nzzzv
+nnoremap <expr> ' "'" . nr2char(getchar()) . 'zz'
+nnoremap <expr> ` "`" . nr2char(getchar()) . 'zz'
+" better yanks and deletes
+nmap <leader>y "+y
+vmap <leader>y "+y
+nmap <leader>d "_d
+vmap <leader>d "_d
+nmap <leader>p "+p
+vmap <leader>p "+p
+
+" Buffers
+nmap <leader>bl :ls<CR>
+nmap <leader>bs :sp<CR>:ls<CR>:b
+nmap <leader>bv :vsp<CR>:ls<CR>:b
+nmap <leader>bb :ls<CR>:b
+
+" Finder
+nmap <leader>nn :topleft vsp<CR>:Ex<CR>
+nmap <leader>np :topleft vsp<CR>:Ex<CR><C-W>p
+nmap <leader>nc <C-W><C-T><C-W>c<C-W>p
+nmap <leader>nl <C-W><C-T>
+let g:netrw_liststyles=3
