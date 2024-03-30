@@ -47,6 +47,8 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 		vim.highlight.on_yank()
 	end,
 })
+-- better pane splits
+vim.opt.splitright = true
 
 ------------------------------------------------------------------------------
 -- Remaps
