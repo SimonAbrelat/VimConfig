@@ -36,6 +36,7 @@ vim.opt.mouse = "a" -- can be useful for resizing splits
 -- nice cursor
 vim.opt.cursorline = true
 vim.opt.ruler = true
+vim.opt.colorcolumn = "100"
 vim.api.nvim_create_autocmd("ColorScheme", {
 	command = "highlight CursorLine guibg=NONE gui=underline cterm=underline",
 })
@@ -54,11 +55,11 @@ vim.opt.splitright = true
 -- Remaps
 ------------------------------------------------------------------------------
 vim.g.mapleader = " "
-vim.keymap.set("n", "<leader>fv", vim.cmd.Ex)
+vim.keymap.set("n", "<leader>fx", vim.cmd.Ex, { desc = "[F]ind in E[x]" })
 
 -- scope aware moves
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+vim.keymap.set("v", "gJ", ":m '>+1<CR>gv=gv", { desc = "Move visual line up" })
+vim.keymap.set("v", "gK", ":m '<-2<CR>gv=gv", { desc = "Move visual line down" })
 -- center the screen
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
@@ -73,9 +74,9 @@ vim.keymap.set("v", "<leader>Y", '"+Y')
 vim.keymap.set({ "n", "v" }, "<leader>d", '"_d', { desc = "Delete without override paste buffer" })
 
 vim.keymap.set("n", "Q", "<Nop>")
-vim.keymap.set("n", "<leader>vf", function()
+vim.keymap.set("n", "<leader>cf", function()
 	vim.lsp.buf.format()
-end, { desc = "Format code" })
+end, { desc = "[C]ode [F]ormat" })
 
 -- window operations
 vim.keymap.set("n", "<leader>wv", "<C-w>v", { desc = "[W]indow split [v]ertically" })
@@ -105,6 +106,8 @@ vim.keymap.set("n", "<leader>tc", "<cmd>tabc<Cr>", { desc = "Current [T]ab [C]lo
 -- exit the terminal
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
+--Obsidian
+vim.opt.conceallevel = 1
 ------------------------------------------------------------------------------
 -- Installing Packages
 ------------------------------------------------------------------------------
@@ -125,18 +128,57 @@ require("lazy").setup({
 	{ -- Useful plugin to show you pending keybinds.
 		"folke/which-key.nvim",
 		event = "VimEnter", -- Sets the loading event to 'VimEnter'
-		config = function() -- This is the function that runs, AFTER loading
-			require("which-key").setup()
+		opts = {
+			-- delay between pressing a key and opening which-key (milliseconds)
+			-- this setting is independent of vim.o.timeoutlen
+			delay = 0,
+			icons = {
+				-- set icon mappings to true if you have a Nerd Font
+				mappings = vim.g.have_nerd_font,
+				-- If you are using a Nerd Font: set icons.keys to an empty table which will use the
+				-- default which-key.nvim defined Nerd Font icons, otherwise define a string table
+				keys = vim.g.have_nerd_font and {} or {
+					Up = "<Up> ",
+					Down = "<Down> ",
+					Left = "<Left> ",
+					Right = "<Right> ",
+					C = "<C-…> ",
+					M = "<M-…> ",
+					D = "<D-…> ",
+					S = "<S-…> ",
+					CR = "<CR> ",
+					Esc = "<Esc> ",
+					ScrollWheelDown = "<ScrollWheelDown> ",
+					ScrollWheelUp = "<ScrollWheelUp> ",
+					NL = "<NL> ",
+					BS = "<BS> ",
+					Space = "<Space> ",
+					Tab = "<Tab> ",
+					F1 = "<F1>",
+					F2 = "<F2>",
+					F3 = "<F3>",
+					F4 = "<F4>",
+					F5 = "<F5>",
+					F6 = "<F6>",
+					F7 = "<F7>",
+					F8 = "<F8>",
+					F9 = "<F9>",
+					F10 = "<F10>",
+					F11 = "<F11>",
+					F12 = "<F12>",
+				},
+			},
 
 			-- Document existing key chains
-			require("which-key").register({
-				["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-				["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-				["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-				["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
-				["<leader>f"] = { name = "[F]ind", _ = "which_key_ignore" },
-			})
-		end,
+			spec = {
+				{ "<leader>d", group = "[D]ocument" },
+				{ "<leader>f", group = "[F]ind" },
+				{ "<leader>w", group = "[W]orkspace" },
+				{ "<leader>r", group = "[R]ename" },
+				{ "<leader>c", group = "[C]ode" },
+				{ "<leader>t", group = "[T]abs" },
+			},
+		},
 	},
 
 	{ -- Fuzzy Finder (files, lsp, etc)
@@ -317,6 +359,30 @@ require("lazy").setup({
 						Lua = {
 							completion = {
 								callSnippet = "Replace",
+							},
+						},
+					},
+				},
+				pylsp = {
+					settings = {
+						pylsp = {
+							plugins = {
+								-- formatter options
+								black = {
+									enabled = true,
+									line_length = 100,
+								},
+								autopep8 = { enabled = false },
+								yapf = { enabled = false },
+								mccabe = { enabled = false },
+								-- linter options
+								pylint = { enabled = true, executable = "pylint" },
+								pyflakes = { enabled = false },
+								pycodestyle = { enabled = false },
+								-- type checker
+								pylsp_mypy = { enabled = true },
+								-- import sorting
+								pyls_isort = { enabled = true },
 							},
 						},
 					},
@@ -530,7 +596,7 @@ require("lazy").setup({
 	{ -- Obsidian
 		"epwalsh/obsidian.nvim",
 		version = "*", -- recommended, use latest release instead of latest commit
-		lazy = true,
+		lazy = false,
 		ft = "markdown",
 		-- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
 		-- event = {
@@ -555,37 +621,32 @@ require("lazy").setup({
 					path = "/home/mable/Documents/Notes/vault/vault",
 				},
 			},
-		},
-
-		-- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
-		completion = {
-			-- Set to false to disable completion.
-			nvim_cmp = true,
-			-- Trigger completion at 2 chars.
-			min_chars = 2,
-		},
-		-- Optional, configure key mappings. These are the defaults. If you don't want to set any keymappings this
-		-- way then set 'mappings = {}'.
-		mappings = {
-			-- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
-			["gf"] = {
-				action = function()
-					return require("obsidian").util.gf_passthrough()
-				end,
-				opts = { noremap = false, expr = true, buffer = true },
+			-- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
+			completion = {
+				-- Set to false to disable completion.
+				nvim_cmp = true,
+				-- Trigger completion at 2 chars.
+				min_chars = 2,
 			},
-			-- Toggle check-boxes.
-			["<leader>ch"] = {
-				action = function()
-					return require("obsidian").util.toggle_checkbox()
-				end,
-				opts = { buffer = true },
+			-- Optional, configure key mappings. These are the defaults. If you don't want to set any keymappings this
+			-- way then set 'mappings = {}'.
+			mappings = {
+				-- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
+				["gf"] = {
+					action = function()
+						return require("obsidian").util.gf_passthrough()
+					end,
+					opts = { noremap = false, expr = true, buffer = true },
+				},
+				-- Toggle check-boxes.
+				["<leader>ch"] = {
+					action = function()
+						return require("obsidian").util.toggle_checkbox()
+					end,
+					opts = { buffer = true },
+				},
 			},
+			open_notes_in = "current",
 		},
-		open_notes_in = "current",
-
-		config = function()
-			vim.opt.conceallevel = 1
-		end,
 	},
 }, {})
